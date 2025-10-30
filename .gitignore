@@ -1,0 +1,116 @@
+############################
+# OS / Editor
+############################
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# VS Code (giữ một số file cấu hình hữu ích)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Rider / IntelliJ
+.idea/
+*.sln.iml
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+############################
+# .NET / Build artifacts
+############################
+bin/
+obj/
+out/
+artifacts/
+Debug/
+Release/
+[Tt]est[Rr]esults/
+*.pidb
+*.svclog
+*.vshost.*
+*.dbmdl
+*.jfm
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+project.lock.json
+# Package lock (tạo bởi dotnet restore cũ)
+project.assets.json
+
+# Publish output (nếu bạn publish local)
+publish/
+wwwroot/*.map
+
+############################
+# Logs / Coverage
+############################
+logs/
+*.log
+*_logs/
+coverage/
+coverage-*/
+coverage.*.xml
+lcov.info
+*.trx
+
+############################
+# Entity Framework
+############################
+# Giữ lại Migrations để team dùng chung
+# Migrations/**  <-- KHÔNG ignore
+
+# Tool state
+*.Ide.log
+
+############################
+# Docker / Env
+############################
+# Biến môi trường runtime (không commit secrets)
+.env
+docker-compose.override.yml
+# Build cache / temp
+*.tmp
+*.temp
+
+############################
+# Frontend (nếu có trong mono-repo)
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.cache/
+.next/
+.vite/
+*.map
+
+############################
+# Misc
+############################
+*.orig
+*.rej
+*.swp
+*.swo
