@@ -13,11 +13,10 @@ RUN dotnet publish 2b-ecommerce.csproj -c Release -o /app/publish /p:UseAppHost=
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_URLS=http://+:5049
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 COPY --from=build /app/publish ./
-EXPOSE 8080
+EXPOSE 5049
 
-# TÊN DLL phải đúng 100% với tên assembly (thường theo csproj)
 ENTRYPOINT ["dotnet", "./2b-ecommerce.dll"]

@@ -35,11 +35,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Nếu bạn dùng HTTPS redirect, nên chỉ bật ở Development
-if (app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 
 // AuthZ nếu có
 // app.UseAuthentication();

@@ -42,8 +42,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Permissions> Permissions { get; set; }
 
-    public virtual DbSet<Products> Products { get; set; }
-
     public virtual DbSet<PurchaseItems> PurchaseItems { get; set; }
 
     public virtual DbSet<Purchases> Purchases { get; set; }
@@ -90,6 +88,7 @@ public partial class AppDbContext : DbContext
             .HasPostgresEnum("OrderStatus", new[] { "PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED" })
             .HasPostgresEnum("PaymentMethod", new[] { "COD", "EWALLET" })
             .HasPostgresEnum("PaymentStatus", new[] { "PENDING", "PAID", "FAILED", "REFUNDED" })
+            .HasPostgresExtension("pgcrypto")
             .HasPostgresExtension("uuid-ossp");
 
         modelBuilder.Entity<Batches>(entity =>
@@ -291,11 +290,6 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("Permissions_pkey");
 
             entity.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
-        });
-
-        modelBuilder.Entity<Products>(entity =>
-        {
-            entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<PurchaseItems>(entity =>
