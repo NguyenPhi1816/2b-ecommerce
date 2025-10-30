@@ -7,4 +7,4 @@ dotnet ef dbcontext scaffold Name=Default Npgsql.EntityFrameworkCore.PostgreSQL 
   --context-dir Infrastructure/Persistence ^
   --schema public ^
   --use-database-names ^
-  --no-pluralize --force %*
+  --no-pluralize %*
