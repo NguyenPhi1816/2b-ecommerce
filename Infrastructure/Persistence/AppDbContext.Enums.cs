@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 
@@ -77,6 +80,37 @@ public partial class AppDbContext
             args[0] = modelBuilder;
 
             HasPostgresEnumGeneric.MakeGenericMethod(enumType).Invoke(null, args);
+        }
+
+        ApplyEnumStringConversions(modelBuilder);
+    }
+
+    private static void ApplyEnumStringConversions(ModelBuilder modelBuilder)
+    {
+        var converters = new Dictionary<Type, ValueConverter>();
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                var propertyType = property.ClrType;
+                var enumType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+                if (!enumType.IsEnum || enumType.Namespace != typeof(DiscountMode).Namespace)
+                {
+                    continue;
+                }
+
+                if (!converters.TryGetValue(enumType, out var converter))
+                {
+                    var converterType = typeof(EnumToStringConverter<>).MakeGenericType(enumType);
+                    converter = (ValueConverter)Activator.CreateInstance(converterType)!;
+                    converters[enumType] = converter;
+                }
+
+                property.SetValueConverter(converter);
+                property.SetColumnType("text");
+            }
         }
     }
 }
