@@ -12,7 +12,7 @@ using _2b_ecommerce.Infrastructure.Persistence;
 namespace _2b_ecommerce.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251031034431_Init")]
+    [Migration("20251031073727_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -23,12 +23,12 @@ namespace _2b_ecommerce.Migrations
                 .HasAnnotation("ProductVersion", "9.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "DiscountMode", new[] { "PERCENT", "AMOUNT" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "GenderType", new[] { "MALE", "FEMALE" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "InventoryType", new[] { "IN", "OUT", "TRANSFER_IN", "TRANSFER_OUT", "ADJUST" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "OrderStatus", new[] { "PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "PaymentMethod", new[] { "COD", "EWALLET" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "PaymentStatus", new[] { "PENDING", "PAID", "FAILED", "REFUNDED" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "discount_mode", new[] { "percent", "amount" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "gender_type", new[] { "male", "female" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "inventory_type", new[] { "in", "out", "transfer_in", "transfer_out", "adjust" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "order_status", new[] { "pending", "confirmed", "shipped", "delivered", "cancelled", "returned" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "payment_method", new[] { "cod", "ewallet" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "public", "payment_status", new[] { "pending", "paid", "failed", "refunded" });
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "pgcrypto");
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -229,7 +229,7 @@ namespace _2b_ecommerce.Migrations
                         .HasColumnType("numeric(18,2)");
 
                     b.Property<int>("Mode")
-                        .HasColumnType("\"DiscountMode\"");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -277,7 +277,7 @@ namespace _2b_ecommerce.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("Type")
-                        .HasColumnType("\"InventoryType\"");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("UnitId")
                         .HasColumnType("uuid");
@@ -413,7 +413,7 @@ namespace _2b_ecommerce.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("PaymentMethod")
-                        .HasColumnType("\"PaymentMethod\"");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("ProductDiscount")
                         .HasPrecision(18, 2)
@@ -424,7 +424,7 @@ namespace _2b_ecommerce.Migrations
                         .HasColumnType("numeric(18,2)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("\"OrderStatus\"");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -468,7 +468,7 @@ namespace _2b_ecommerce.Migrations
                         .HasDefaultValueSql("now()");
 
                     b.Property<int>("Method")
-                        .HasColumnType("\"PaymentMethod\"");
+                        .HasColumnType("integer");
 
                     b.Property<string>("OrderCodeSnapshot")
                         .HasColumnType("text");
@@ -492,7 +492,7 @@ namespace _2b_ecommerce.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Status")
-                        .HasColumnType("\"PaymentStatus\"");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TransactionRef")
                         .HasColumnType("text");
@@ -1064,7 +1064,7 @@ namespace _2b_ecommerce.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Gender")
-                        .HasColumnType("\"GenderType\"");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -1161,7 +1161,7 @@ namespace _2b_ecommerce.Migrations
                         .HasDefaultValueSql("0");
 
                     b.Property<int>("Mode")
-                        .HasColumnType("\"DiscountMode\"");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("PerCustomerLimit")
                         .HasColumnType("integer");

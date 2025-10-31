@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace _2b_ecommerce.Infrastructure.Models;
 
@@ -12,6 +13,10 @@ public partial class Orders
     public Guid UserId { get; set; }
 
     public Guid DeliveryInfoId { get; set; }
+
+    public OrderStatus Status { get; set; }     
+         
+    public PaymentMethod PaymentMethod { get; set; } 
 
     public decimal ProductDiscount { get; set; }
 

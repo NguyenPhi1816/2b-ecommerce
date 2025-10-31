@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace _2b_ecommerce.Infrastructure.Models;
 
@@ -14,6 +15,8 @@ public partial class Users
     public string FirstName { get; set; } = null!;
 
     public string LastName { get; set; } = null!;
+
+    public GenderType Gender { get; set; }
 
     public DateOnly Dob { get; set; }
 

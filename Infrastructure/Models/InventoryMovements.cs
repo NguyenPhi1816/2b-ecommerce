@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace _2b_ecommerce.Infrastructure.Models;
 
@@ -14,6 +15,8 @@ public partial class InventoryMovements
     public Guid? RelatedOrderId { get; set; }
 
     public Guid? RelatedPurchaseId { get; set; }
+    
+    public InventoryType Type { get; set; }
 
     public decimal Quantity { get; set; }
 

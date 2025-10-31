@@ -1,15 +1,25 @@
-using _2b_ecommerce.Infrastructure.Persistence;
+using Application.Configurations.Authorization;
 using Application.Interfaces;
+using Application.Configurations.Routing;
 using Application.Services;
-using Domain.Enums;
+using _2b_ecommerce.Application.Configurations.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using _2b_ecommerce.Infrastructure.Persistence;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//
+// Load secrets when running locally
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
 // 1) Logging & configuration guardrails
-//
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -19,33 +29,18 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 if (string.IsNullOrWhiteSpace(connectionString))
     throw new InvalidOperationException("Missing ConnectionStrings:Default");
 
-//
 // 2) API essentials
-//
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Insert(0, new ApiPrefixConvention("api/v1"));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//
-// 3) Configure Npgsql and map .NET enums to PostgreSQL enum types (runtime binding)
-//    - MapEnum<T>("type_name") wires the enum at the driver level.
-//    - EF still needs HasPostgresEnum<T>() in OnModelCreating to generate CREATE TYPE during migrations.
-//
+
+// 3) Configure Npgsql data source and map .NET enums to PostgreSQL enum types
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-
-dataSourceBuilder.MapEnum<InventoryType>("inventory_type");
-dataSourceBuilder.MapEnum<PaymentMethod>("payment_method");
-dataSourceBuilder.MapEnum<PaymentStatus>("payment_status");
-dataSourceBuilder.MapEnum<DiscountMode>("discount_mode");
-dataSourceBuilder.MapEnum<OrderStatus>("order_status");
-dataSourceBuilder.MapEnum<GenderType>("gender_type");
-
 var dataSource = dataSourceBuilder.Build();
-
-//
-// 4) Register DbContext with the configured data source
-//    - MigrationsAssembly ensures migrations live with the AppDbContext assembly (Infrastructure.Persistence).
-//
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseNpgsql(
         dataSource,
@@ -53,16 +48,41 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     )
 );
 
-//
+// JWT Bearer
+var jwtOpt = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
+if (string.IsNullOrWhiteSpace(jwtOpt.Key))
+    throw new InvalidOperationException("Missing Jwt:Key. Configure it via user secrets or environment variables.");
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o =>
+    {
+        o.TokenValidationParameters = new()
+        {
+            ValidIssuer = jwtOpt.Issuer,
+            ValidAudience = jwtOpt.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpt.Key)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30)
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
 // 5) Application services (DI)
-//
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 var app = builder.Build();
 
-//
 // 6) HTTP pipeline
-//
 if (app.Environment.IsDevelopment())
 {
     // Swagger UI for local development
@@ -70,24 +90,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
     // Auto-apply EF migrations on startup (DEV ONLY).
-    // In production, prefer deploying idempotent SQL scripts with backup/rollback plan.
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
-else
-{
-    // For production, enable Swagger only behind auth or an allowlist if needed.
-    // app.UseSwagger();
-    // app.UseSwaggerUI();
-}
-
-// If running behind a reverse proxy (Nginx/Traefik), consider:
-// app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+

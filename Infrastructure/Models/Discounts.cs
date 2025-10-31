@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace _2b_ecommerce.Infrastructure.Models;
 
@@ -8,6 +9,7 @@ public partial class Discounts
     public Guid Id { get; set; }
 
     public string Name { get; set; } = null!;
+    public DiscountMode Mode { get; set; }
 
     public DateTime? StartsAt { get; set; }
 

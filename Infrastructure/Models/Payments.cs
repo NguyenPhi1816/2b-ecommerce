@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Domain.Enums;
 
 namespace _2b_ecommerce.Infrastructure.Models;
 
@@ -30,4 +31,8 @@ public partial class Payments
     public DateTime UpdatedAt { get; set; }
 
     public virtual Orders Order { get; set; } = null!;
+
+    public PaymentMethod Method { get; set; }
+    
+    public PaymentStatus Status { get; set; }
 }

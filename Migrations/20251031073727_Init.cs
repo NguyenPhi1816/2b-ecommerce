@@ -12,12 +12,12 @@ namespace _2b_ecommerce.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:public.DiscountMode", "PERCENT,AMOUNT")
-                .Annotation("Npgsql:Enum:public.GenderType", "MALE,FEMALE")
-                .Annotation("Npgsql:Enum:public.InventoryType", "IN,OUT,TRANSFER_IN,TRANSFER_OUT,ADJUST")
-                .Annotation("Npgsql:Enum:public.OrderStatus", "PENDING,CONFIRMED,SHIPPED,DELIVERED,CANCELLED,RETURNED")
-                .Annotation("Npgsql:Enum:public.PaymentMethod", "COD,EWALLET")
-                .Annotation("Npgsql:Enum:public.PaymentStatus", "PENDING,PAID,FAILED,REFUNDED")
+                .Annotation("Npgsql:Enum:public.discount_mode", "percent,amount")
+                .Annotation("Npgsql:Enum:public.gender_type", "male,female")
+                .Annotation("Npgsql:Enum:public.inventory_type", "in,out,transfer_in,transfer_out,adjust")
+                .Annotation("Npgsql:Enum:public.order_status", "pending,confirmed,shipped,delivered,cancelled,returned")
+                .Annotation("Npgsql:Enum:public.payment_method", "cod,ewallet")
+                .Annotation("Npgsql:Enum:public.payment_status", "pending,paid,failed,refunded")
                 .Annotation("Npgsql:PostgresExtension:pgcrypto", ",,")
                 .Annotation("Npgsql:PostgresExtension:uuid-ossp", ",,");
 
@@ -46,8 +46,8 @@ namespace _2b_ecommerce.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    Mode = table.Column<int>(type: "\"DiscountMode\"", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Mode = table.Column<int>(type: "integer", nullable: false),
                     StartsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     EndsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CustomerType = table.Column<string>(type: "text", nullable: true),
@@ -145,7 +145,6 @@ namespace _2b_ecommerce.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    Mode = table.Column<int>(type: "\"DiscountMode\"", nullable: false),
                     Code = table.Column<string>(type: "text", nullable: false),
                     StartsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     EndsAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -154,7 +153,8 @@ namespace _2b_ecommerce.Migrations
                     MinOrderTotal = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true, defaultValueSql: "0"),
                     TotalLimit = table.Column<int>(type: "integer", nullable: true),
                     PerCustomerLimit = table.Column<int>(type: "integer", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    Mode = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -215,11 +215,11 @@ namespace _2b_ecommerce.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    Gender = table.Column<int>(type: "\"GenderType\"", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    Gender = table.Column<int>(type: "integer", nullable: false),
                     Dob = table.Column<DateOnly>(type: "date", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
@@ -508,11 +508,11 @@ namespace _2b_ecommerce.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    Status = table.Column<int>(type: "\"OrderStatus\"", nullable: false),
-                    PaymentMethod = table.Column<int>(type: "\"PaymentMethod\"", nullable: false),
                     Code = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     DeliveryInfoId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    PaymentMethod = table.Column<int>(type: "integer", nullable: false),
                     ProductDiscount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     VoucherDiscount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     ShippingFee = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
@@ -567,11 +567,11 @@ namespace _2b_ecommerce.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    Type = table.Column<int>(type: "\"InventoryType\"", nullable: false),
                     BatchId = table.Column<Guid>(type: "uuid", nullable: false),
                     UnitId = table.Column<Guid>(type: "uuid", nullable: false),
                     RelatedOrderId = table.Column<Guid>(type: "uuid", nullable: true),
                     RelatedPurchaseId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<decimal>(type: "numeric(18,3)", precision: 18, scale: 3, nullable: false),
                     MovedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     Note = table.Column<string>(type: "text", nullable: true)
@@ -675,8 +675,6 @@ namespace _2b_ecommerce.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "uuid_generate_v4()"),
-                    Method = table.Column<int>(type: "\"PaymentMethod\"", nullable: false),
-                    Status = table.Column<int>(type: "\"PaymentStatus\"", nullable: false),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     PaidAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -687,7 +685,9 @@ namespace _2b_ecommerce.Migrations
                     OrderCodeSnapshot = table.Column<string>(type: "text", nullable: true),
                     RawPayload = table.Column<string>(type: "jsonb", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    Method = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

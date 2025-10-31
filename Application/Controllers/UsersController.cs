@@ -1,19 +1,20 @@
 using Application.DTOs.Pagination;
 using Application.DTOs.Users;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace _2b_ecommerce.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("users")]
 public sealed class UsersController : ControllerBase
 {
     private readonly IUserService _users;
     public UsersController(IUserService users) => _users = users;
 
-    // GET /api/users?search=&isActive=&page=1&pageSize=20
+    [Authorize(Policy = "perm:users:read")]
     [HttpGet]
     public async Task<IActionResult> GetAll(
         [FromQuery] string? search,
@@ -40,7 +41,7 @@ public sealed class UsersController : ControllerBase
         });
     }
 
-    // GET /api/users/{id}
+    [Authorize(Policy = "perm:users:read")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
