@@ -8,12 +8,12 @@ public partial class AppDbContext
 {
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasPostgresEnum<InventoryType>("public", "inventory_type");
-        modelBuilder.HasPostgresEnum<PaymentMethod>("public", "payment_method");
-        modelBuilder.HasPostgresEnum<PaymentStatus>("public", "payment_status");
-        modelBuilder.HasPostgresEnum<DiscountMode>("public", "discount_mode");
-        modelBuilder.HasPostgresEnum<OrderStatus>("public", "order_status");
-        modelBuilder.HasPostgresEnum<GenderType>("public", "gender_type");
+        modelBuilder.HasPostgresEnum<InventoryType>("public", "InventoryType");
+        modelBuilder.HasPostgresEnum<PaymentMethod>("public", "PaymentMethod");
+        modelBuilder.HasPostgresEnum<PaymentStatus>("public", "PaymentStatus");
+        modelBuilder.HasPostgresEnum<DiscountMode>("public", "DiscountMode");
+        modelBuilder.HasPostgresEnum<OrderStatus>("public", "OrderStatus");
+        modelBuilder.HasPostgresEnum<GenderType>("public", "GenderType");
 
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());

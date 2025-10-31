@@ -82,12 +82,12 @@ public partial class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("DiscountMode", new[] { "PERCENT", "AMOUNT" })
-            .HasPostgresEnum("GenderType", new[] { "MALE", "FEMALE" })
-            .HasPostgresEnum("InventoryType", new[] { "IN", "OUT", "TRANSFER_IN", "TRANSFER_OUT", "ADJUST" })
-            .HasPostgresEnum("OrderStatus", new[] { "PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED" })
-            .HasPostgresEnum("PaymentMethod", new[] { "COD", "EWALLET" })
-            .HasPostgresEnum("PaymentStatus", new[] { "PENDING", "PAID", "FAILED", "REFUNDED" })
+            .HasPostgresEnum("public", "DiscountMode", new[] { "PERCENT", "AMOUNT" })
+            .HasPostgresEnum("public", "GenderType", new[] { "MALE", "FEMALE" })
+            .HasPostgresEnum("public", "InventoryType", new[] { "IN", "OUT", "TRANSFER_IN", "TRANSFER_OUT", "ADJUST" })
+            .HasPostgresEnum("public", "OrderStatus", new[] { "PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED", "RETURNED" })
+            .HasPostgresEnum("public", "PaymentMethod", new[] { "COD", "EWALLET" })
+            .HasPostgresEnum("public", "PaymentStatus", new[] { "PENDING", "PAID", "FAILED", "REFUNDED" })
             .HasPostgresExtension("pgcrypto")
             .HasPostgresExtension("uuid-ossp");
 

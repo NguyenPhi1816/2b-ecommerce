@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _2b_ecommerce.Infrastructure.Models;
-public partial class Discount
+public partial class Discounts
 {
     public DiscountMode Mode { get; set; }
 }
-public partial class DiscountConfiguration : IEntityTypeConfiguration<Discount>
+public partial class DiscountConfiguration : IEntityTypeConfiguration<Discounts>
 {
-    public void Configure(EntityTypeBuilder<Discount> e)
+    public void Configure(EntityTypeBuilder<Discounts> e)
     {
-        e.Property(p => p.Mode).HasColumnType("discount_mode");
+        e.Property(p => p.Mode).HasColumnType("\"DiscountMode\"");
     }
 }

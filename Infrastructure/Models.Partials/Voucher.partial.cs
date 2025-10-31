@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace _2b_ecommerce.Infrastructure.Models;
-public partial class Voucher
+public partial class Vouchers
 {
     public DiscountMode Mode { get; set; }
 }
-public partial class VoucherConfiguration : IEntityTypeConfiguration<Voucher>
+public partial class VoucherConfiguration : IEntityTypeConfiguration<Vouchers>
 {
-    public void Configure(EntityTypeBuilder<Voucher> e)
+    public void Configure(EntityTypeBuilder<Vouchers> e)
     {
-        e.Property(p => p.Mode).HasColumnType("discount_mode");
+        e.Property(p => p.Mode).HasColumnType("\"DiscountMode\"");
     }
 }

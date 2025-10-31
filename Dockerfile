@@ -2,7 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Đặt đúng TÊN csproj web (ví dụ 2b-ecommerce.csproj)
 COPY ./2b-ecommerce.csproj ./
 RUN dotnet restore 2b-ecommerce.csproj
 
